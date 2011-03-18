@@ -17,12 +17,13 @@
     <p><%= f.text_area :signature, :rows => "2", :style => "width:50%;" %></p>
 
 		<p>
+		<% if current_user.admin? %>
 		<p class="label">
 			<label for='bee'>Bienchen?</label>
 			<%= check_box_tag 'bee', 'bee', !@user.avatar_image_url.blank? %>
 		</p>
 		<p>&nbsp;</p>
-
+		<% end %>
     <p class="label"><label for="user_time_zone"><%=t :timezone %></label></p>
 		
     <p><%= f.time_zone_select :time_zone, ActiveSupport::TimeZone.us_zones %></p>

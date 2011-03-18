@@ -10,6 +10,7 @@
 /config/database.yml
 /config/smtp.yml
 /config/deploy.rb
+/config/unicorn.rb
 /db/*.sqlite3
 /public/avatars/*
 /public/files/*

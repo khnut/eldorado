@@ -43,6 +43,13 @@ module ApplicationHelper
   def avatar_for(user)
     image_tag user.avatar unless user.avatar.nil?
   end
+  
+  def avatar_image(user)
+    return if user.avatar_image_url.blank?
+    content_tag(:div, :class => 'avatar_image') do
+      image_tag user.avatar_image_url
+    end
+  end
 
   def rank_for(user)
     return I18n.t(:rank_administrator) if user.admin

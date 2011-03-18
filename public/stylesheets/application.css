@@ -49,7 +49,12 @@ tbody .tds{border:0;padding:10px;}
 .post-body{overflow:auto;}
 .post-body ul{margin:10px !important;padding:6px;}
 .post-body li{list-style-type:disc;}
-.thread dd.avatar{margin:8px 0 4px;}
+.thread dd.avatar{margin:8px 0 4px;position:relative;}
+.thread dd.avatar div.avatar_image {
+	position: absolute;
+	top: -15px;
+	right: 0px;
+}
 .thread .links{text-align:right;color:#ccc;}
 .forums-index .tcl{width:58%;}
 .forums-index .tcr{width:34%;vertical-align:middle;}

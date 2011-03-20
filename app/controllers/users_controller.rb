@@ -34,7 +34,9 @@ class UsersController < ApplicationController
     @user = User.find(params[:id])
     @user.update_attributes(params[:user])
     @user.profile_updated_at = Time.now.utc
-    @user.avatar_image_url = params['bee'].blank? || !current_user.admin? ? nil : '/images/bee.png'
+    if current_user.admin?
+      @user.avatar_image_url = params['bee'].blank? ? nil : '/images/bee.png'
+    end
     if @user.save
       redirect_to @user
     else

@@ -7,7 +7,6 @@ module Unicorn
     class << self
       
       def start
-        # TODO: check if server is already running
         system "cd #{app_path} && unicorn_rails -c #{config_file} -E #{rails_env} -D"
       end
 
@@ -17,7 +16,6 @@ module Unicorn
 
       def restart
         system "kill -s USR2 #{pid}"
-        # TODO: send QUIT to old master, if new master is running correctly
       end
 
       def reload
@@ -33,7 +31,7 @@ module Unicorn
       end
       
       def status
-        system "ps axo user,pid,ppid,command | grep #{pid}"
+        system "ps axo user,pid,ppid,cmd | grep #{pid}"
       end
 
       def stop_workers
@@ -46,13 +44,6 @@ module Unicorn
       
       def stop_worker
         system "kill -s TTOU #{pid}"
-      end
-        
-      def pid
-        File.read(File.join(app_path, "tmp", "pids", "unicorn.pid"))
-      rescue
-        STDERR.puts "Unicorn Server is not running"
-        exit(1)
       end
         
       private
@@ -69,6 +60,13 @@ module Unicorn
       def rails_env
         ENV['RAILS_ENV'] || 'production'
       end
+        
+      def pid
+        File.read(File.join(app_path, "tmp", "pids", "unicorn.pid"))
+      rescue
+        STDERR.puts "Unicorn server is not running"
+        exit(1)
+      end
       
     end
     
@@ -79,7 +77,7 @@ end
 begin
   Unicorn::Runner.send(ARGV[0])
 rescue
-  STDERR.puts "usage script/unicorn.rb [start|stop|restart|status|monitor|pid]"
+  STDERR.puts "usage script/unicorn.rb [start|stop|restart|reload|status|stop_worker|start_worker|stop_workers|shutdown|kill]"
   STDERR.puts "Environment variables:"
   STDERR.puts "APP_PATH (default: <script path>/..)"
   STDERR.puts "RAILS_ENV (default: production)"

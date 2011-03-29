@@ -8,6 +8,7 @@
 /config/amazon_s3.yml
 /config/config.yml
 /config/database.yml
+/config/newrelic.yml
 /config/smtp.yml
 /config/deploy.rb
 /config/unicorn.rb

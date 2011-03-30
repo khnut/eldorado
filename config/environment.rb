@@ -5,16 +5,17 @@ Rails::Initializer.run do |config|
   require 'yaml'
   CONFIG = (YAML.load_file('config/config.yml')[RAILS_ENV] rescue {}).merge(ENV)
   CONFIG['s3'] = true if CONFIG['s3_access_id'] && CONFIG['s3_secret_key'] && CONFIG['s3_bucket_name']
-  config.time_zone = 'UTC'
-  config.i18n.default_locale = :en
+  config.time_zone = 'UCT'
+  config.i18n.default_locale = :de
   config.active_record.partial_updates = true
   config.frameworks -= [:active_resource]
   config.action_controller.session = {:key => CONFIG['session_key'], :secret => CONFIG['session_secret']}
-  config.gem "paperclip", :version => "2.3.0"
+  config.gem "paperclip", :version => "2.3.8"
   config.gem "right_aws", :version => "1.9.0"
-  config.gem "right_http_connection", :version => "1.2.4"
+  config.gem "right_http_connection", :version => "1.3.0"
   config.gem "searchlogic", :version => "2.3.9"
   config.gem "will_paginate", :version => "2.3.15"
   config.gem "hoptoad_notifier", :version => "2.2.2" if CONFIG['hoptoad_key']
   config.gem "newrelic_rpm"
+  config.gem "daemon-spawn", :lib => 'daemon_spawn'
 end

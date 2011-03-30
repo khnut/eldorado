@@ -1,0 +1,53 @@
+#!/usr/bin/env ruby
+
+require 'rubygems'
+require 'daemon_spawn'
+
+class UnicornMonitor < DaemonSpawn::Base
+
+  @@unicorn_worker_memory_limit = 120_000
+  
+  def start(args)
+    puts "[#{Time.now}] starting unicorn monitor"
+    loop do
+      begin
+        # unicorn workers
+        #
+        # ps output line format:
+        # 31580 275444 unicorn_rails worker[15] -c /data/github/current/config/unicorn.rb -E production -D
+        # pid ram command
+        
+        lines = `ps -e -www -o pid,rss,command | grep '[u]nicorn_rails worker'`.split("\n")
+        lines.each do |line|
+          parts = line.split(' ')
+          if parts[1].to_i > @@unicorn_worker_memory_limit
+            # tell the worker to die after it finishes serving its request
+            puts "[#{Time.now}] killing unicorn worker: (#{parts[1].to_i/1024} MB)"
+            ::Process.kill('QUIT', parts[0].to_i)
+          end
+        end
+      rescue Object
+        # don't die ever once we've tested this
+        nil
+      end
+      
+      sleep 30
+    end
+  end
+
+  def stop
+    puts "[#{Time.now}] stopping unicorn monitor"
+  end
+  
+end
+
+root = File.expand_path(File.join(File.dirname(__FILE__), '..'))
+name = 'unicorn_monitor'
+UnicornMonitor.spawn!(
+  :log_file    => File.join(root, 'log', "#{name}.log"),
+  :pid_file    => File.join(root, 'tmp', 'pids', "#{name}.pid"),
+  :sync_log    => true,
+  :working_dir => root,
+  :singleton   => true
+)
+
